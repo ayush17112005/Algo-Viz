@@ -1,9 +1,12 @@
 import "./App.css";
+import BSTVisualizer from "./components/BSTVisualizer";
+import SortingVisualizer from "./components/SortingVisualizer";
 
 function App() {
   return (
     <div className="App">
-      <hello />
+      <BSTVisualizer />
+      <SortingVisualizer />
     </div>
   );
 }
