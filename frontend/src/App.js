@@ -1,23 +1,37 @@
 import "./App.css";
-import { Routes, Route, useNavigate } from "react-router";
-import BSTVisualizer from "./components/BSTVisualizer";
-import SortingVisualizer from "./components/SortingVisualizer";
-
-import PathFinder from "./components/Dijsktra";
-import SieveVisualizer from "./components/PrimeNumber";
+import { Routes, Route } from "react-router";
 import HomePage from "./pages/HomePage";
+import { Footer } from "./components/Footer";
+import { Header } from "./components/Header";
+import BubbleSortVisualizer from "./pages/BubbleSortVisualizer";
+import MergeSortVisualizer from "./pages/MergeSortVisualizer";
+import QuickSortVisualizer from "./pages/QuickSortVisualizer";
+import HeapSortVisualizer from "./pages/HeapSortVisualizer";
+import SelectionSortVisualizer from "./pages/SelectionSortVisualizer";
+import DijkstraVisualizer from "./pages/DijkstraVisualizer";
+import BFSVisualizer from "./pages/BFSVisualizer";
+import DFSVisualizer from "./pages/DFSVisualizer";
+import TopologicalSortVisualizer from "./pages/TopoVisualizer";
+import AStarVisualizer from "./pages/AstarVisualizer";
 
 function App() {
-  const navigate = useNavigate();
   return (
     <div className="App">
+      <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/pathfinder" element={<PathFinder />} />
-        <Route path="/bst" element={<BSTVisualizer />} />
-        <Route path="/seive" element={<SieveVisualizer />} />
-        <Route path="/sorting" element={<SortingVisualizer />} />
+        <Route path="/bubble" element={<BubbleSortVisualizer />} />
+        <Route path="/merge" element={<MergeSortVisualizer />} />
+        <Route path="/quick" element={<QuickSortVisualizer />} />
+        <Route path="heap" element={<HeapSortVisualizer />} />
+        <Route path="/selection" element={<SelectionSortVisualizer />} />
+        <Route path="/dijkstra" element={<DijkstraVisualizer />} />
+        <Route path="/bfs" element={<BFSVisualizer />} />
+        <Route path="dfs" element={<DFSVisualizer />} />
+        <Route path="topo" element={<TopologicalSortVisualizer />} />
+        <Route path="astar" element={<AStarVisualizer />} />
       </Routes>
+      <Footer />
     </div>
   );
 }
