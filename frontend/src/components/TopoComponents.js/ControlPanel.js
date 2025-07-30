@@ -1,27 +1,24 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Play, Pause, RotateCcw, Code2, Info } from "lucide-react";
 import { ControlButton } from "../SharedComponents/ControlButton";
 import { SpeedControl } from "../SharedComponents/SpeedControl";
 import { StepCounter } from "../SharedComponents/StepCounter";
-import { Play, Pause, RotateCcw, Code2, Info } from "lucide-react";
 
-export const ControlPanel = ({
+const ControlPanel = ({
   isPlaying,
-  handlePlayPause,
+  speed,
+  startTopologicalSort,
   resetAnimation,
   generateNewGraph,
   toggleCode,
   toggleInfo,
   showCode,
   showInfo,
-  startNode,
-  handleStartNodeChange,
-  graph,
-  speed,
-  handleSpeedChange,
+  setSpeed,
   currentStep,
-  totalSteps,
-  algorithmInfo,
+  steps,
+  pauseAnimation, // Add this prop
 }) => {
   return (
     <motion.div
@@ -32,11 +29,11 @@ export const ControlPanel = ({
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <ControlButton
+            onClick={isPlaying ? pauseAnimation : startTopologicalSort}
             className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-lg"
-            onClick={handlePlayPause}
             icon={isPlaying ? <Pause size={18} /> : <Play size={18} />}
           >
-            {isPlaying ? "Pause" : "Start"}
+            {isPlaying ? "Pause" : "Start Topological Sort"}
           </ControlButton>
 
           <ControlButton
@@ -47,28 +44,28 @@ export const ControlPanel = ({
           </ControlButton>
 
           <ControlButton onClick={generateNewGraph}>
-            Generate New Graph
+            Generate New DAG
           </ControlButton>
 
           <ControlButton
+            onClick={toggleCode}
             className={`px-4 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-md ${
               showCode
                 ? "bg-green-600 text-white hover:bg-green-700"
                 : "border border-gray-300 hover:border-gray-400 bg-white hover:bg-gray-50 text-gray-700"
             }`}
-            onClick={toggleCode}
             icon={<Code2 size={18} />}
           >
             {showCode ? "Hide Code" : "Show Code"}
           </ControlButton>
 
           <ControlButton
+            onClick={toggleInfo}
             className={`px-4 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-md ${
               showInfo
                 ? "bg-blue-600 text-white hover:bg-blue-700"
                 : "border border-gray-300 hover:border-gray-400 bg-white hover:bg-gray-50 text-gray-700"
             }`}
-            onClick={toggleInfo}
             icon={<Info size={18} />}
           >
             {showInfo ? "Hide Info" : "Algorithm Info"}
@@ -76,31 +73,12 @@ export const ControlPanel = ({
         </div>
 
         <div className="flex items-center gap-6">
-          <motion.div
-            className="flex items-center gap-3"
-            whileHover={{ scale: 1.02 }}
-          >
-            <span className="text-sm font-medium text-gray-700">
-              Start Node:
-            </span>
-            <select
-              value={startNode}
-              onChange={(e) => handleStartNodeChange(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
-            >
-              {Object.keys(graph).map((node) => (
-                <option key={node} value={node}>
-                  {node}
-                </option>
-              ))}
-            </select>
-          </motion.div>
-
-          <SpeedControl speed={speed} onSpeedChange={handleSpeedChange} />
-
-          <StepCounter currentStep={currentStep} totalSteps={totalSteps} />
+          <SpeedControl speed={speed} onSpeedChange={setSpeed} />
+          <StepCounter currentStep={currentStep} totalSteps={steps.length} />
         </div>
       </div>
     </motion.div>
   );
 };
+
+export default ControlPanel;

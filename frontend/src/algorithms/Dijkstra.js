@@ -1,68 +1,80 @@
-export const dijkstraCode = `function dijkstra(grid, start, end) {
-    const rows = grid.length;
-    const cols = grid[0].length;
-    
+export const dijkstraCode = `vector<pair<int, int>> dijkstra(vector<vector<string>>& grid, pair<int, int> start, pair<int, int> end) {
+    int rows = grid.size();
+    int cols = grid[0].size();
+
     // Initialize distances and visited arrays
-    const distances = Array(rows).fill().map(() => Array(cols).fill(Infinity));
-    const visited = Array(rows).fill().map(() => Array(cols).fill(false));
-    const previous = Array(rows).fill().map(() => Array(cols).fill(null));
-    
-    distances[start.row][start.col] = 0;
-    
-    // Priority queue (min-heap)
-    const pq = [{row: start.row, col: start.col, distance: 0}];
-    
-    const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-    
-    while (pq.length > 0) {
+    vector<vector<int>> distances(rows, vector<int>(cols, INT_MAX));
+    vector<vector<bool>> visited(rows, vector<bool>(cols, false));
+    vector<vector<pair<int, int>>> previous(rows, vector<pair<int, int>>(cols, {-1, -1}));
+
+    distances[start.first][start.second] = 0;
+
+    // Min-heap priority queue: {distance, {row, col}}
+    priority_queue<
+        pair<int, pair<int, int>>, 
+        vector<pair<int, pair<int, int>>>, 
+        greater<pair<int, pair<int, int>>>
+    > pq;
+
+    pq.push({0, start});
+
+    // Possible directions: up, down, left, right
+    vector<pair<int, int>> directions = {{-1,0}, {1,0}, {0,-1}, {0,1}};
+
+    while (!pq.empty()) {
         // Get node with minimum distance
-        pq.sort((a, b) => a.distance - b.distance);
-        const current = pq.shift();
-        
-        if (visited[current.row][current.col]) continue;
-        
-        visited[current.row][current.col] = true;
-        
+        auto [dist, current] = pq.top();
+        pq.pop();
+
+        int row = current.first;
+        int col = current.second;
+
+        if (visited[row][col]) continue;
+
+        visited[row][col] = true;
+
         // If we reached the destination
-        if (current.row === end.row && current.col === end.col) {
+        if (row == end.first && col == end.second) {
             return reconstructPath(previous, start, end);
         }
-        
-        // Check all neighbors
-        for (const [dr, dc] of directions) {
-            const newRow = current.row + dr;
-            const newCol = current.col + dc;
-            
+
+        // Explore all 4-directional neighbors
+        for (auto [dr, dc] : directions) {
+            int newRow = row + dr;
+            int newCol = col + dc;
+
             if (isValidCell(newRow, newCol, rows, cols) &&
-                !visited[newRow][newCol] && 
-                grid[newRow][newCol] !== 'wall') {
-                
-                const newDistance = current.distance + 1;
-                
+                !visited[newRow][newCol] &&
+                grid[newRow][newCol] != "wall") {
+
+                int newDistance = dist + 1;
+
                 if (newDistance < distances[newRow][newCol]) {
                     distances[newRow][newCol] = newDistance;
-                    previous[newRow][newCol] = {row: current.row, col: current.col};
-                    pq.push({row: newRow, col: newCol, distance: newDistance});
+                    previous[newRow][newCol] = {row, col};
+                    pq.push({newDistance, {newRow, newCol}});
                 }
             }
         }
     }
-    
-    return []; // No path found
+
+    return {}; // No path found
 }
 
-function isValidCell(row, col, rows, cols) {
+// Utility to check if cell is inside grid
+bool isValidCell(int row, int col, int rows, int cols) {
     return row >= 0 && row < rows && col >= 0 && col < cols;
 }
 
-function reconstructPath(previous, start, end) {
-    const path = [];
-    let current = end;
-    
-    while (current) {
-        path.unshift(current);
-        current = previous[current.row][current.col];
+// Reconstruct path from 'end' to 'start'
+vector<pair<int, int>> reconstructPath(vector<vector<pair<int, int>>>& previous, pair<int, int> start, pair<int, int> end) {
+    vector<pair<int, int>> path;
+    pair<int, int> current = end;
+
+    while (current.first != -1 && current.second != -1) {
+        path.insert(path.begin(), current);
+        current = previous[current.first][current.second];
     }
-    
+
     return path;
 }`;

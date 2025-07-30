@@ -1,25 +1,29 @@
-export const bfsCode = `function bfs(graph, start) {
-    const visited = new Set();
-    const queue = [start];
-    const result = [];
+export const bfsCode = `vector<int> bfs(unordered_map<int, vector<int>>& graph, int start) {
+    unordered_set<int> visited;
+    queue<int> q;
+    vector<int> result;
     
-    while (queue.length > 0) {
+    // Push the start node into the queue
+    q.push(start);
+    
+    while (!q.empty()) {
         // Dequeue node from front of queue
-        const currentNode = queue.shift();
+        int currentNode = q.front();
+        q.pop();
         
         // If not visited, process it
-        if (!visited.has(currentNode)) {
-            visited.add(currentNode);
-            result.push(currentNode);
+        if (visited.find(currentNode) == visited.end()) {
+            visited.insert(currentNode);
+            result.push_back(currentNode);
             
             // Add neighbors to back of queue
             // (maintains level-by-level exploration)
-            const neighbors = graph[currentNode] || [];
-            neighbors.forEach(neighbor => {
-                if (!visited.has(neighbor) && !queue.includes(neighbor)) {
-                    queue.push(neighbor);
+            vector<int> neighbors = graph[currentNode];
+            for (int neighbor : neighbors) {
+                if (visited.find(neighbor) == visited.end()) {
+                    q.push(neighbor);
                 }
-            });
+            }
         }
     }
     

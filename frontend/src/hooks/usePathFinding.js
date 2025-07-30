@@ -1,28 +1,37 @@
 import { useState, useEffect, useCallback } from "react";
 
-export const usePathfinding = ({
-  gridSize = { rows: 15, cols: 20 },
-  initialStart = { row: 2, col: 2 },
-  initialEnd = { row: 12, col: 17 },
-  algorithmFunction, // Function that generates steps
-  initialSpeed = 200,
-  wallDensity = 0.2,
-}) => {
-  // Grid and positioning state
+const usePathFinding = (algorithmName, generateStepsFunction) => {
+  const [gridSize] = useState({ rows: 15, cols: 20 });
   const [grid, setGrid] = useState([]);
-  const [start, setStart] = useState(initialStart);
-  const [end, setEnd] = useState(initialEnd);
-
-  // Animation state
+  const [start, setStart] = useState({ row: 2, col: 2 });
+  const [end, setEnd] = useState({ row: 12, col: 17 });
   const [steps, setSteps] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [speed, setSpeed] = useState(initialSpeed);
-
-  // Interaction state
+  const [speed, setSpeed] = useState(200);
   const [mode, setMode] = useState("wall");
   const [isDrawing, setIsDrawing] = useState(false);
   const [animatingCells, setAnimatingCells] = useState(new Set());
+
+  // Initialize grid
+  useEffect(() => {
+    const newGrid = Array(gridSize.rows)
+      .fill()
+      .map(() => Array(gridSize.cols).fill("empty"));
+
+    // Add some random walls
+    for (let i = 0; i < gridSize.rows * gridSize.cols * 0.2; i++) {
+      const row = Math.floor(Math.random() * gridSize.rows);
+      const col = Math.floor(Math.random() * gridSize.cols);
+      if (
+        (row !== start.row || col !== start.col) &&
+        (row !== end.row || col !== end.col)
+      ) {
+        newGrid[row][col] = "wall";
+      }
+    }
+    setGrid(newGrid);
+  }, [gridSize, start, end]);
 
   // Helper function to add animating cells
   const addAnimatingCell = useCallback((row, col) => {
@@ -38,32 +47,7 @@ export const usePathfinding = ({
     }, 300);
   }, []);
 
-  // Initialize grid with random walls
-  const initializeGrid = useCallback(() => {
-    const newGrid = Array(gridSize.rows)
-      .fill()
-      .map(() => Array(gridSize.cols).fill("empty"));
-
-    // Add random walls
-    for (let i = 0; i < gridSize.rows * gridSize.cols * wallDensity; i++) {
-      const row = Math.floor(Math.random() * gridSize.rows);
-      const col = Math.floor(Math.random() * gridSize.cols);
-      if (
-        (row !== start.row || col !== start.col) &&
-        (row !== end.row || col !== end.col)
-      ) {
-        newGrid[row][col] = "wall";
-      }
-    }
-    setGrid(newGrid);
-  }, [gridSize, start, end, wallDensity]);
-
-  // Initialize grid on mount and when dependencies change
-  useEffect(() => {
-    initializeGrid();
-  }, [initializeGrid]);
-
-  // Auto-play animation
+  // Animation effect
   useEffect(() => {
     let interval;
     if (isPlaying && currentStep < steps.length - 1) {
@@ -81,72 +65,54 @@ export const usePathfinding = ({
     }
 
     return () => clearInterval(interval);
-  }, [isPlaying, currentStep, steps.length, speed, addAnimatingCell]);
+  }, [isPlaying, currentStep, steps, speed, addAnimatingCell]);
 
-  // Handle cell interactions
-  const handleCellClick = useCallback(
-    (row, col) => {
-      if (isPlaying) return;
+  const handleCellClick = (row, col) => {
+    if (isPlaying) return;
 
-      const newGrid = [...grid];
+    const newGrid = [...grid];
 
-      switch (mode) {
-        case "start":
-          setStart({ row, col });
-          newGrid[row][col] = "empty";
-          break;
-        case "end":
-          setEnd({ row, col });
-          newGrid[row][col] = "empty";
-          break;
-        case "wall":
-          if (
-            (row !== start.row || col !== start.col) &&
-            (row !== end.row || col !== end.col)
-          ) {
-            newGrid[row][col] = newGrid[row][col] === "wall" ? "empty" : "wall";
-          }
-          break;
-        case "erase":
-          if (
-            (row !== start.row || col !== start.col) &&
-            (row !== end.row || col !== end.col)
-          ) {
-            newGrid[row][col] = "empty";
-          }
-          break;
-        default:
-          break;
+    if (mode === "start") {
+      setStart({ row, col });
+      newGrid[row][col] = "empty";
+    } else if (mode === "end") {
+      setEnd({ row, col });
+      newGrid[row][col] = "empty";
+    } else if (mode === "wall") {
+      if (
+        (row !== start.row || col !== start.col) &&
+        (row !== end.row || col !== end.col)
+      ) {
+        newGrid[row][col] = newGrid[row][col] === "wall" ? "empty" : "wall";
       }
+    } else if (mode === "erase") {
+      if (
+        (row !== start.row || col !== start.col) &&
+        (row !== end.row || col !== end.col)
+      ) {
+        newGrid[row][col] = "empty";
+      }
+    }
 
-      setGrid(newGrid);
-    },
-    [isPlaying, grid, mode, start, end]
-  );
+    setGrid(newGrid);
+  };
 
-  const handleMouseDown = useCallback(
-    (row, col) => {
-      setIsDrawing(true);
+  const handleMouseDown = (row, col) => {
+    setIsDrawing(true);
+    handleCellClick(row, col);
+  };
+
+  const handleMouseEnter = (row, col) => {
+    if (isDrawing && (mode === "wall" || mode === "erase")) {
       handleCellClick(row, col);
-    },
-    [handleCellClick]
-  );
+    }
+  };
 
-  const handleMouseEnter = useCallback(
-    (row, col) => {
-      if (isDrawing && (mode === "wall" || mode === "erase")) {
-        handleCellClick(row, col);
-      }
-    },
-    [isDrawing, mode, handleCellClick]
-  );
-
-  const handleMouseUp = useCallback(() => {
+  const handleMouseUp = () => {
     setIsDrawing(false);
-  }, []);
+  };
 
-  // Control functions
-  const clearGrid = useCallback(() => {
+  const clearGrid = () => {
     const newGrid = Array(gridSize.rows)
       .fill()
       .map(() => Array(gridSize.cols).fill("empty"));
@@ -155,9 +121,9 @@ export const usePathfinding = ({
     setCurrentStep(0);
     setIsPlaying(false);
     setAnimatingCells(new Set());
-  }, [gridSize]);
+  };
 
-  const generateMaze = useCallback(() => {
+  const generateMaze = () => {
     const newGrid = Array(gridSize.rows)
       .fill()
       .map(() => Array(gridSize.cols).fill("empty"));
@@ -168,7 +134,7 @@ export const usePathfinding = ({
     setIsPlaying(false);
     setAnimatingCells(new Set());
 
-    // Generate walls to add
+    // Animate wall generation
     const wallsToAdd = [];
     for (let i = 0; i < gridSize.rows * gridSize.cols * 0.3; i++) {
       const row = Math.floor(Math.random() * gridSize.rows);
@@ -202,72 +168,59 @@ export const usePathfinding = ({
         }, 300);
       }, index * 50);
     });
-  }, [gridSize, start, end]);
+  };
 
-  const startAlgorithm = useCallback(() => {
-    if (steps.length === 0 && algorithmFunction) {
-      const newSteps = algorithmFunction(grid, start, end);
+  const startAlgorithm = () => {
+    if (steps.length === 0) {
+      const newSteps = generateStepsFunction(grid, start, end);
       setSteps(newSteps);
       setCurrentStep(0);
     }
     setIsPlaying(true);
-  }, [steps.length, algorithmFunction, grid, start, end]);
+  };
 
-  const resetAnimation = useCallback(() => {
+  const pauseAlgorithm = () => {
+    setIsPlaying(false);
+  };
+
+  const resetAnimation = () => {
     setCurrentStep(0);
     setIsPlaying(false);
     setAnimatingCells(new Set());
-  }, []);
+  };
 
-  const togglePlayPause = useCallback(() => {
-    if (isPlaying) {
-      setIsPlaying(false);
-    } else {
-      startAlgorithm();
-    }
-  }, [isPlaying, startAlgorithm]);
-
-  // Get current step data with fallback
-  const getCurrentStepData = useCallback(
-    (fallbackGrid = grid) => {
-      return (
-        steps[currentStep] || {
-          grid: fallbackGrid,
+  // Initialize default step data structure based on algorithm
+  const defaultStepData =
+    algorithmName === "dijkstra"
+      ? {
+          grid: grid,
           visited: Array(gridSize.rows)
             .fill()
             .map(() => Array(gridSize.cols).fill(false)),
           distances: Array(gridSize.rows)
             .fill()
             .map(() => Array(gridSize.cols).fill(Infinity)),
+          current: null,
+          path: [],
+          description: "Click 'Start Algorithm' to begin pathfinding",
+        }
+      : {
+          grid: grid,
+          visited: Array(gridSize.rows)
+            .fill()
+            .map(() => Array(gridSize.cols).fill(false)),
           openSet: [],
           closedSet: [],
           current: null,
           path: [],
           description: "Click 'Start Algorithm' to begin pathfinding",
-        }
-      );
-    },
-    [steps, currentStep, grid, gridSize]
-  );
+        };
 
-  // Helper function to check if a cell is animating
-  const isCellAnimating = useCallback(
-    (row, col) => {
-      const cellKey = `${row}-${col}`;
-      return animatingCells.has(cellKey);
-    },
-    [animatingCells]
-  );
-
-  const pause = useCallback(() => {
-    setIsPlaying(false);
-  }, []);
-
-  // Helper function to get cell coordinates as key
-  const getCellKey = useCallback((row, col) => `${row}-${col}`, []);
+  // Get current step data or default
+  const currentStepData = steps[currentStep] || defaultStepData;
 
   return {
-    // State
+    gridSize,
     grid,
     start,
     end,
@@ -276,36 +229,19 @@ export const usePathfinding = ({
     isPlaying,
     speed,
     mode,
-    isDrawing,
     animatingCells,
-    gridSize,
-    pause,
-
-    // Setters
-    setGrid,
-    setStart,
-    setEnd,
+    currentStepData,
     setSpeed,
     setMode,
-
-    // Event handlers
-    handleCellClick,
     handleMouseDown,
     handleMouseEnter,
     handleMouseUp,
-
-    // Control functions
     clearGrid,
     generateMaze,
     startAlgorithm,
+    pauseAlgorithm,
     resetAnimation,
-    togglePlayPause,
-
-    // Utility functions
-    getCurrentStepData,
-    isCellAnimating,
-    getCellKey,
-    addAnimatingCell,
-    initializeGrid,
   };
 };
+
+export default usePathFinding;

@@ -1,9 +1,9 @@
 import React from "react";
-import { ControlButton } from "./ControlButton";
+import { ControlButton } from "../SharedComponents/ControlButton";
 import { motion } from "framer-motion";
 import { Pause, Code2, Info, Play, RotateCcw } from "lucide-react";
-import { SpeedControl } from "./SpeedControl";
-import { StepCounter } from "./SpeedCounter";
+import { SpeedControl } from "../SharedComponents/SpeedControl";
+import { StepCounter } from "../SharedComponents/StepCounter";
 export const ControlPanel = ({
   isPlaying,
   speed,
@@ -31,7 +31,7 @@ export const ControlPanel = ({
             onClick={onPlayPause}
             icon={isPlaying ? <Pause size={18} /> : <Play size={18} />}
           >
-            {isPlaying ? "Pause" : "Start Sorting"}
+            {isPlaying ? "Pause" : "Start"}
           </ControlButton>
 
           <ControlButton

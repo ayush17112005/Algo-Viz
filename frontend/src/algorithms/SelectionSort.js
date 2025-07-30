@@ -1,27 +1,23 @@
-export const selectionSortCode = `function selectionSort(arr) {
-  const n = arr.length;
-  
-  // Outer loop to move the boundary of unsorted array
-  for (let i = 0; i < n - 1; i++) {
-      let minIndex = i;
-      
-      // Inner loop to find the minimum element in unsorted part
-      for (let j = i + 1; j < n; j++) {
-          if (arr[j] < arr[minIndex]) {
-              minIndex = j;
-          }
-      }
-      
-      // Swap the found minimum with the first element of unsorted part
-      if (minIndex !== i) {
-          let temp = arr[i];
-          arr[i] = arr[minIndex];
-          arr[minIndex] = temp;
-          
-          // Alternative ES6 swap syntax:
-          // [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-      }
-  }
-  
-  return arr;
-}`;
+export const selectionSortCode = `
+// Function to perform Selection Sort
+void selectionSort(vector<int>& arr) {
+    int n = arr.size();
+
+    // Outer loop to mark the boundary of unsorted array
+    for (int i = 0; i < n - 1; i++) {
+        int minIndex = i;
+
+        // Inner loop to find the index of the minimum element
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        // Swap the found minimum element with the first unsorted element
+        if (minIndex != i) {
+            swap(arr[i], arr[minIndex]);
+        }
+    }
+}
+`;
