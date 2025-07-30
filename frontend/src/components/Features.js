@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Play, Code2 } from "lucide-react";
-import GithubIcon from "../assets/Github.png";
-import LinkedinIcon from "../assets/Linkedin.png";
+import AyushProfile from "../assets/ayush.jpg";
+import AnubhavProfile from "../assets/anav5.jpg";
 
 export const Features = () => {
   const fadeInUp = {
@@ -18,6 +18,27 @@ export const Features = () => {
       },
     },
   };
+
+  const teamMembers = [
+    {
+      name: "Ayush",
+      image: AyushProfile,
+      url: "https://www.linkedin.com/in/ayushmansaxena/",
+      gradient: "from-blue-100 to-blue-200",
+      border: "border-blue-300",
+      hoverBorder: "group-hover:border-blue-500",
+      shadow: "shadow-blue-200",
+    },
+    {
+      name: "Anubhav",
+      image: AnubhavProfile,
+      url: "https://www.linkedin.com/in/anubhav-sultania-689538291/",
+      gradient: "from-indigo-100 to-indigo-200",
+      border: "border-indigo-300",
+      hoverBorder: "group-hover:border-indigo-500",
+      shadow: "shadow-indigo-200",
+    },
+  ];
 
   return (
     <section className="py-20 px-4 bg-gradient-to-br from-gray-50 to-white">
@@ -117,7 +138,7 @@ export const Features = () => {
           ))}
         </motion.div>
 
-        {/* Social Links Section */}
+        {/* Social Links Section - Profile Images with LinkedIn Theme */}
         <motion.div
           className="mt-20 text-center"
           initial={{ opacity: 0, y: 30 }}
@@ -128,58 +149,80 @@ export const Features = () => {
           <h3 className="text-2xl font-bold text-gray-900 mb-6">
             Connect With Us
           </h3>
-          <div className="flex justify-center gap-6">
-            <motion.a
-              href="https://github.com/ayush17112005"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <motion.div
-                className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center shadow-lg border-2 border-gray-200 group-hover:border-gray-400 transition-all duration-300"
-                whileHover={{
-                  boxShadow: "0 15px 30px rgba(0, 0, 0, 0.15)",
-                  rotate: [0, -5, 5, 0],
-                }}
-                transition={{
-                  rotate: { duration: 0.5 },
-                }}
+          <div className="flex justify-center gap-8">
+            {teamMembers.map((member, index) => (
+              <motion.a
+                key={member.name}
+                href={member.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col items-center"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <img
-                  src={GithubIcon}
-                  alt="GitHub"
-                  className="w-8 h-8 transition-transform duration-300 group-hover:scale-110"
-                />
-              </motion.div>
-            </motion.a>
+                <motion.div
+                  className={`relative w-16 h-16 rounded-2xl overflow-hidden border-3 ${member.border} ${member.hoverBorder} transition-all duration-300 bg-gradient-to-br ${member.gradient} p-1`}
+                  whileHover={{
+                    boxShadow: "0 15px 30px rgba(0, 0, 0, 0.15)",
+                    rotate: index === 0 ? [0, -5, 5, 0] : [0, 5, -5, 0],
+                    y: -5,
+                  }}
+                  transition={{
+                    rotate: { duration: 0.5 },
+                    y: { duration: 0.3 },
+                  }}
+                >
+                  {/* LinkedIn-themed background with gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-100 opacity-20 rounded-xl"></div>
 
-            <motion.a
-              href="https://www.linkedin.com/in/ayushmansaxena/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <motion.div
-                className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center shadow-lg border-2 border-blue-200 group-hover:border-blue-400 transition-all duration-300"
-                whileHover={{
-                  boxShadow: "0 15px 30px rgba(0, 0, 0, 0.15)",
-                  rotate: [0, 5, -5, 0],
-                }}
-                transition={{
-                  rotate: { duration: 0.5 },
-                }}
-              >
-                <img
-                  src={LinkedinIcon}
-                  alt="LinkedIn"
-                  className="w-14 h-14 transition-transform duration-300 group-hover:scale-110"
-                />
-              </motion.div>
-            </motion.a>
+                  {/* Profile Image */}
+                  <motion.div
+                    className="relative w-full h-full rounded-xl overflow-hidden"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <img
+                      src={member.image}
+                      alt={`${member.name} Profile`}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
+
+                    {/* LinkedIn-themed overlay on hover */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+                      whileHover={{ opacity: 0.2 }}
+                    />
+                  </motion.div>
+
+                  {/* LinkedIn indicator dot */}
+                  <motion.div
+                    className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center"
+                    whileHover={{ scale: 1.2 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div className="w-2 h-2 bg-white rounded-full"></div>
+                  </motion.div>
+                </motion.div>
+
+                {/* Name label below the image */}
+                <motion.p
+                  className="text-sm text-gray-700 mt-3 font-medium"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ delay: 0.5 + index * 0.1 }}
+                >
+                  {member.name}
+                </motion.p>
+
+                {/* LinkedIn text on hover */}
+                <motion.p
+                  className="text-xs text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-medium"
+                  whileHover={{ opacity: 1 }}
+                >
+                  View LinkedIn
+                </motion.p>
+              </motion.a>
+            ))}
           </div>
         </motion.div>
       </div>

@@ -1,12 +1,31 @@
-import React from "react";
-import { Code2 } from "lucide-react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { Code2, Users } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router";
 import LinkedinIcon from "../assets/Linkedin.png";
 import GithubIcon from "../assets/Github.png";
+// Add your profile pictures
+import AyushProfile from "../assets/ayush.jpg";
+import AnubhavProfile from "../assets/anav5.jpg";
 
 export const Header = () => {
   const navigate = useNavigate();
+  const [hoveredMember, setHoveredMember] = useState(null);
+
+  const teamMembers = [
+    {
+      name: "Ayush",
+      image: AyushProfile,
+      linkedin: "https://www.linkedin.com/in/ayushmansaxena/",
+      github: "https://github.com/ayush17112005",
+    },
+    {
+      name: "Anubhav",
+      image: AnubhavProfile,
+      linkedin: "https://www.linkedin.com/in/anubhav-sultania-689538291/",
+      github: "https://github.com/your-friend",
+    },
+  ];
 
   return (
     <motion.header
@@ -52,50 +71,121 @@ export const Header = () => {
             </div>
           </motion.div>
 
-          {/* Right Section - Social Icons Only */}
-          <div className="flex items-center ">
-            {/* GitHub Icon - 10x10 */}
-            <motion.button
-              className="relative p-2 text-gray-600 hover:text-green-600 transition-all duration-300 rounded-full hover:bg-green-50 hover:shadow-md w-14 h-14 flex items-center justify-center"
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() =>
-                window.open("https://github.com/ayush17112005", "_blank")
-              }
+          {/* Right Section - Team Profiles */}
+          <div className="flex items-center gap-2">
+            <motion.span
+              className="text-sm text-gray-600 mr-2 flex items-center gap-1"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
             >
-              <img
-                src={GithubIcon}
-                alt="Github"
-                className="w-8 h-8 filter hover:brightness-110 object-contain"
-              />
-              <motion.div
-                className="absolute inset-0 bg-green-400 rounded-full opacity-0 hover:opacity-10 transition-opacity"
-                whileHover={{ opacity: 0.1 }}
-              />
-            </motion.button>
+              <Users size={16} />
+              Built by
+            </motion.span>
 
-            {/* LinkedIn Icon - 14x14 */}
-            <motion.button
-              className="relative p-2 text-gray-600 hover:text-green-600 transition-all duration-300 rounded-full hover:bg-green-50 hover:shadow-md w-18 h-18 flex items-center justify-center"
-              whileHover={{ scale: 1.1, rotate: -5 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() =>
-                window.open(
-                  "https://www.linkedin.com/in/ayushmansaxena/",
-                  "_blank"
-                )
-              }
-            >
-              <img
-                src={LinkedinIcon}
-                alt="Linkedin"
-                className="w-14 h-14 filter hover:brightness-110 object-contain"
-              />
+            {teamMembers.map((member, index) => (
               <motion.div
-                className="absolute inset-0 bg-green-400 rounded-full opacity-0 hover:opacity-10 transition-opacity"
-                whileHover={{ opacity: 0.1 }}
-              />
-            </motion.button>
+                key={member.name}
+                className="relative group"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5 + index * 0.1 }}
+                onMouseEnter={() => setHoveredMember(index)}
+                onMouseLeave={() => setHoveredMember(null)}
+              >
+                {/* Flip Container */}
+                <motion.div
+                  className="relative w-10 h-10 cursor-pointer"
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => window.open(member.linkedin, "_blank")}
+                >
+                  <AnimatePresence mode="wait">
+                    {hoveredMember !== index ? (
+                      // Front Side - Profile Image
+                      <motion.div
+                        key="profile"
+                        className="absolute inset-0 w-full h-full rounded-full overflow-hidden border-2 border-green-200 group-hover:border-green-400 transition-border duration-300"
+                        initial={{ rotateY: 0 }}
+                        animate={{ rotateY: 0 }}
+                        exit={{ rotateY: -90 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <img
+                          src={member.image}
+                          alt={member.name}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-green-400 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+                      </motion.div>
+                    ) : (
+                      // Back Side - LinkedIn Icon
+                      <motion.div
+                        key="linkedin"
+                        className="absolute inset-0 w-full h-full rounded-full border-2 border-blue-400 flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 shadow-lg"
+                        initial={{ rotateY: 90 }}
+                        animate={{ rotateY: 0 }}
+                        exit={{ rotateY: 90 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <img
+                          src={LinkedinIcon}
+                          alt="LinkedIn"
+                          className="w-6 h-6"
+                        />
+                        <div className="absolute inset-0 bg-blue-400 opacity-10 rounded-full" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+
+                {/* Tooltip - Fixed positioning */}
+                <AnimatePresence>
+                  {hoveredMember === index && (
+                    <motion.div
+                      className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1 rounded-md whitespace-nowrap z-50 shadow-lg"
+                      initial={{ opacity: 0, y: -10, scale: 0.8 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.8 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {member.name}
+                      {/* Tooltip arrow */}
+                      <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* GitHub link - appears on hover */}
+                <AnimatePresence>
+                  {hoveredMember === index && (
+                    <motion.div
+                      className="absolute -top-14 left-1/2 transform -translate-x-1/2 z-50"
+                      initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.8 }}
+                      transition={{ duration: 0.2, delay: 0.1 }}
+                    >
+                      <motion.button
+                        className="w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 border border-gray-200"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(member.github, "_blank");
+                        }}
+                      >
+                        <img
+                          src={GithubIcon}
+                          alt="GitHub"
+                          className="w-5 h-5"
+                        />
+                      </motion.button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
           </div>
         </div>
       </div>
