@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "visual-izer",
+  "name": "algo-viz-7tmd",
   "builds": [
     {
       "src": "frontend/package.json",
@@ -21,7 +21,7 @@
       ]
     },
     {
-      "source": "/(.*\\.(js|css|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot))",
+      "source": "/(.*.(js|css|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot))",
       "headers": [
         {
           "key": "cache-control",
