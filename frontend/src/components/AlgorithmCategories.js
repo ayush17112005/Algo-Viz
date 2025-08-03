@@ -4,10 +4,16 @@ import { Play } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router";
+
 export const AlgorithmCategories = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
   const { fadeInUp, staggerContainer } = useContext(AppContext);
   const navigate = useNavigate();
+
+  const handleCardClick = (algorithm) => {
+    navigate(algorithm.route);
+  };
+
   return (
     <section id="categories" className="py-16 px-4 bg-gray-50">
       <div className="max-w-6xl mx-auto">
@@ -37,16 +43,19 @@ export const AlgorithmCategories = () => {
           {algorithms.map((algorithm, index) => (
             <motion.div
               key={algorithm.title}
-              className="bg-white rounded-lg border-2 border-gray-200 hover:border-green-500 p-6 cursor-pointer transition-all duration-200 hover:shadow-lg"
+              className="relative bg-white rounded-lg border-2 border-gray-200 hover:border-green-500 p-6 cursor-pointer transition-all duration-200 hover:shadow-lg"
               variants={fadeInUp}
               whileHover={{
                 scale: 1.03,
                 y: -8,
                 boxShadow: "0 20px 40px rgba(0,0,0,0.12)",
+                zIndex: 10,
               }}
               whileTap={{ scale: 0.98 }}
               onMouseEnter={() => setHoveredCard(algorithm.title)}
               onMouseLeave={() => setHoveredCard(null)}
+              onClick={() => handleCardClick(algorithm)}
+              style={{ zIndex: hoveredCard === algorithm.title ? 10 : 1 }}
             >
               <div className="flex flex-col h-full">
                 <div className="flex items-start gap-4 mb-4">
@@ -67,47 +76,47 @@ export const AlgorithmCategories = () => {
                   </div>
                 </div>
 
-                <AnimatePresence>
-                  {hoveredCard === algorithm.title && (
-                    <motion.div
-                      className="space-y-2 mb-4"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.3 }}
-                    >
+                {/* Fixed height spacer for consistency */}
+                <div className="h-20 relative mb-4">
+                  <AnimatePresence>
+                    {hoveredCard === algorithm.title && (
                       <motion.div
-                        className="flex items-center justify-between text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 }}
+                        className="absolute inset-0 space-y-2 bg-white rounded-lg"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
                       >
-                        <span className="font-medium">Time Complexity:</span>
-                        <span className="font-mono text-green-600">
-                          {algorithm.timeComplexity}
-                        </span>
+                        <motion.div
+                          className="flex items-center justify-between text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.1 }}
+                        >
+                          <span className="font-medium">Time Complexity:</span>
+                          <span className="font-mono text-green-600">
+                            {algorithm.timeComplexity}
+                          </span>
+                        </motion.div>
+                        <motion.div
+                          className="flex items-center justify-between text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.2 }}
+                        >
+                          <span className="font-medium">Space Complexity:</span>
+                          <span className="font-mono text-blue-600">
+                            {algorithm.spaceComplexity}
+                          </span>
+                        </motion.div>
                       </motion.div>
-                      <motion.div
-                        className="flex items-center justify-between text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.2 }}
-                      >
-                        <span className="font-medium">Space Complexity:</span>
-                        <span className="font-mono text-blue-600">
-                          {algorithm.spaceComplexity}
-                        </span>
-                      </motion.div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                    )}
+                  </AnimatePresence>
+                </div>
 
-                <div
-                  className="mt-auto"
-                  onClick={() => navigate(algorithm.route)}
-                >
+                <div className="mt-auto">
                   <motion.button
-                    className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors"
+                    className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors pointer-events-none"
                     whileHover={{
                       scale: 1.02,
                       boxShadow: "0 6px 20px rgba(34, 197, 94, 0.3)",

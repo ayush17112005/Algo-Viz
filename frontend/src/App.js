@@ -11,7 +11,7 @@ import SelectionSortVisualizer from "./pages/SelectionSortVisualizer";
 import DijkstraVisualizer from "./pages/DijkstraVisualizer";
 import BFSVisualizer from "./pages/BFSVisualizer";
 import DFSVisualizer from "./pages/DFSVisualizer";
-import TopologicalSortVisualizer from "./pages/TopoVisualizer";
+import TopologicalSortVisualizer from "./pages/TopologicalSortVisualizer";
 import AStarVisualizer from "./pages/AstarVisualizer";
 
 function App() {

@@ -1,17 +1,17 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import useGraphVisualizer from "../../hooks/useGraphAnimation";
-import { AlgorithmHeader } from "./AlgorithmicHeader";
 import { ControlPanel } from "./ContorlPanel";
-import { CodeDisplay } from "../SortingComponents/CodeDisplay";
+import CodeDisplay from "../SharedComponents/CodeDisplay";
 import { GraphVisualization } from "./GraphVisualization";
 import { StackDisplay } from "./StackDisplay";
 import { VisitedDisplay } from "./VisitedDisplay";
-import { useSortingVisualizerConfig } from "../../hooks/useSortingVisualizerConfig";
-import { ArrayLegend } from "../SortingComponents/ArrayLegend";
-import { AlgorithmInfo } from "../SortingComponents/AlogrithmInfo";
-import { CurrentStep } from "./CurrentStep";
+import { useVisualizerConfig } from "../../hooks/useVisualizerConfig";
+import { Legend } from "../SharedComponents/Legend";
+import { AlgorithmInfo } from "../SharedComponents/AlgorithmInfo";
+import { CurrentStep } from "../SharedComponents/CurrentStep";
 import { QueueDisplay } from "./QueueDisplay";
+import { Title } from "../SharedComponents/Title";
 
 const GraphTraversalVisualizer = ({
   algorithmType,
@@ -50,7 +50,7 @@ const GraphTraversalVisualizer = ({
     totalSteps,
   } = useGraphVisualizer(algorithmType, generateSteps);
 
-  const configs = useSortingVisualizerConfig(algorithmType.toLowerCase());
+  const configs = useVisualizerConfig(algorithmType.toLowerCase());
 
   // Render the appropriate data structure display (Stack for DFS, Queue for BFS)
   const renderDataStructure = () => {
@@ -67,7 +67,7 @@ const GraphTraversalVisualizer = ({
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Title */}
-        <AlgorithmHeader algorithmInfo={algorithmInfo} />
+        <Title title={configs.title} description={configs.description} />
 
         {/* Enhanced Control Panel */}
         <ControlPanel
@@ -118,7 +118,7 @@ const GraphTraversalVisualizer = ({
                 </div>
 
                 {/* Legend */}
-                <ArrayLegend legendItems={configs.legendItems} />
+                <Legend legendItems={configs.legendItems} />
               </GraphVisualization>
             )}
           </AnimatePresence>
@@ -132,7 +132,13 @@ const GraphTraversalVisualizer = ({
               algorithmData={configs.algorithmInfo}
             />
           ) : (
-            !showCode && <CurrentStep currentStepData={currentStepData} />
+            !showCode && (
+              <CurrentStep
+                key="current-step"
+                currentStep={currentStep}
+                currentStepData={currentStepData}
+              />
+            )
           )}
         </AnimatePresence>
       </div>

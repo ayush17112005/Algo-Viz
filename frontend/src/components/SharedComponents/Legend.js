@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-export const ArrayLegend = ({ legendItems }) => {
+export const Legend = ({ legendItems }) => {
   const defaultLegendItems = [
     { color: "bg-blue-500", label: "Unsorted" },
     { color: "bg-purple-500", label: "Heap" },
@@ -8,7 +8,6 @@ export const ArrayLegend = ({ legendItems }) => {
     { color: "bg-green-500", label: "Sorted" },
   ];
   const items = legendItems || defaultLegendItems;
-  console.log(items);
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
