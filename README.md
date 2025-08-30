@@ -10,7 +10,7 @@
 
 ## 🚀 Live Demo
 
-🌐 **[Try it here](https://algo-viz-ji9i.onrender.com/)**  
+🌐 **[Try it here](https://algo-viz-2sfi.vercel.app/)**  
 📂 **[GitHub Repository](https://github.com/anubhavsultania/Algo-Viz.git)**
 
 ---

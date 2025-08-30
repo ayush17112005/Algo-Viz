@@ -1,24 +1,23 @@
 import React, { useContext } from "react";
-import { useSortingVisualizerConfig } from "../../hooks/useSortingVisualizerConfig";
+import { useVisualizerConfig } from "../../hooks/useVisualizerConfig";
 import { AppContext } from "../../context/AppContext";
 import { createColorGetter } from "../../utils/colorUtils";
 import { motion, AnimatePresence } from "framer-motion";
-import { Code2 } from "lucide-react";
 import { ControlPanel } from "./ControlPanel";
 import { ArrayVisualization } from "./ArrayVisualization";
-import { CodeDisplay } from "./CodeDisplay";
-import { CurrentStep } from "./CurrentStep";
-import { AlgorithmInfo } from "./AlogrithmInfo";
-import { ArrayLegend } from "./ArrayLegend";
+import CodeDisplay from "../SharedComponents/CodeDisplay";
+import { CurrentStep } from "../SharedComponents/CurrentStep";
+import { AlgorithmInfo } from "../SharedComponents/AlgorithmInfo";
+import { Legend } from "../SharedComponents/Legend";
 import { ArrayBar } from "./ArrayBar";
-
+import { Title } from "../SharedComponents/Title";
 export const SortingVisualizer = ({
   algorithmType,
   sortingHook,
   algorithmCode,
   customColorGetter,
 }) => {
-  const configs = useSortingVisualizerConfig(algorithmType);
+  const configs = useVisualizerConfig(algorithmType);
   const { showCode, showInfo, toggleCode, toggleInfo } = useContext(AppContext);
   const {
     totalSteps,
@@ -157,30 +156,7 @@ export const SortingVisualizer = ({
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Title */}
-        <motion.div
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
-        >
-          <motion.h1
-            className="text-4xl font-bold text-gray-900 mb-2"
-            whileHover={{ scale: 1.05 }}
-          >
-            <span className="inline-flex items-center gap-3">
-              <Code2 className="text-green-600" size={36} />
-              {configs.title}
-            </span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="text-gray-600"
-          >
-            {configs.description}
-          </motion.p>
-        </motion.div>
-
+        <Title title={configs.title} description={configs.description} />
         {/* Control Panel */}
         <ControlPanel
           isPlaying={isPlaying}
@@ -229,7 +205,7 @@ export const SortingVisualizer = ({
                 {algorithmType === "merge" && renderMergeSortSpecifics()}
 
                 {/* Legend */}
-                <ArrayLegend legendItems={configs.legendItems} />
+                <Legend legendItems={configs.legendItems} />
               </div>
             )}
           </AnimatePresence>

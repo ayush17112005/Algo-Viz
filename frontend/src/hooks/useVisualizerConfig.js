@@ -1,4 +1,5 @@
-export const useSortingVisualizerConfig = (algorithmType) => {
+import { Square, MapPin, Target, Eraser } from "lucide-react";
+export const useVisualizerConfig = (algorithmType) => {
   const configs = {
     bubble: {
       title: "Bubble Sort Visualizer",
@@ -328,6 +329,139 @@ export const useSortingVisualizerConfig = (algorithmType) => {
         {
           color: "bg-blue-300",
           label: "Visited",
+          border: "border-blue-200",
+        },
+        {
+          color: "bg-yellow-400",
+          label: "Shortest Path",
+          border: "border-yellow-300",
+        },
+      ],
+      modeSelection: [
+        {
+          id: "wall",
+          label: "Draw Walls",
+          icon: Square,
+          color: "bg-gray-800",
+        },
+        {
+          id: "start",
+          label: "Set Start",
+          icon: MapPin,
+          color: "bg-green-500",
+        },
+        {
+          id: "end",
+          label: "Set End",
+          icon: Target,
+          color: "bg-red-500",
+        },
+        {
+          id: "erase",
+          label: "Erase",
+          icon: Eraser,
+          color: "bg-white border-gray-300",
+        },
+      ],
+    },
+    topological: {
+      title: "Topological Sort Visualizer",
+      description: "Watch how Topological sort algorithm works step by step",
+      codeTitle: "Topological Sort Implementation",
+      algorithmInfo: [
+        {
+          label: "Time Complexity",
+          value: "O(V + E)",
+          description: "V vertices, E edges",
+          color: "bg-green-100 text-green-800",
+        },
+        {
+          label: "Space Complexity",
+          value: "O(V)",
+          description: "Queue and in-degree array",
+          color: "bg-blue-100 text-blue-800",
+        },
+        {
+          label: "Data Structure",
+          value: "Queue",
+          description: "FIFO - First In First Out",
+          color: "bg-purple-100 text-purple-800",
+        },
+        {
+          label: "Graph Type",
+          value: "DAG Only",
+          description: "Directed Acyclic Graph required",
+          color: "bg-orange-100 text-orange-800",
+        },
+      ],
+      legendItems: [
+        { color: "bg-blue-500", label: "Unprocessed" },
+        { color: "bg-purple-500", label: "In Queue" },
+        { color: "bg-yellow-500", label: "Processing" },
+        { color: "bg-red-500", label: "Current" },
+        { color: "bg-green-500", label: "Processed" },
+      ],
+    },
+
+    Astar: {
+      title: "A* Sort Visualizer",
+      description: "Watch how A* sort algorithm works step by step",
+      codeTitle: "A*  Implementation",
+      algorithmInfo: [
+        {
+          label: "Time Complexity",
+          value: "O(b^d)",
+          description: "Branching factor to depth",
+          color: "bg-orange-100 text-orange-800",
+        },
+        {
+          label: "Space Complexity",
+          value: "O(b^d)",
+          description: "Stores all nodes in memory",
+          color: "bg-blue-100 text-blue-800",
+        },
+        {
+          label: "Optimality",
+          value: "Optimal*",
+          description: "With admissible heuristic",
+          color: "bg-green-100 text-green-800",
+        },
+        {
+          label: "Heuristic",
+          value: "Manhattan",
+          description: "Distance-based estimation",
+          color: "bg-purple-100 text-purple-800",
+        },
+      ],
+      legendItems: [
+        {
+          color: "bg-green-500",
+          label: "Start",
+          border: "border-green-400",
+        },
+        {
+          color: "bg-red-500",
+          label: "End",
+          border: "border-red-400",
+        },
+        {
+          color: "bg-gray-800",
+          label: "Wall",
+          border: "border-gray-700",
+        },
+        {
+          color: "bg-purple-500",
+          label: "Current",
+          border: "border-purple-400",
+        },
+        {
+          color: "bg-cyan-200",
+          label: "Open Set",
+          border: "border-cyan-100",
+        },
+        {
+          color: "bg-blue-300",
+          label: "Closed Set",
           border: "border-blue-200",
         },
         {
